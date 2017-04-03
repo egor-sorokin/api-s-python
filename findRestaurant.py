@@ -11,10 +11,10 @@ foursquare_client_id = 'PQ10XH5TCF5MLEZW51XYJVN24ODIL3IIWXXAUI2CA1HUGRWD'
 foursquare_client_secret = '4BFTG00AFBDPLCXEDLY4F15VKJBQFON5X0RDMAXAHDOGNXAU'
 
 
-def findRestaurant(mealType, location):
+def find_restaurant(meal_type, location):
     lat, lng = getGeocodeLocation(location)
     url = ('https://api.foursquare.com/v2/venues/search?client_id=%s&client_secret=%s&v=20130815&ll=%s,%s&query=%s' % (
-        foursquare_client_id, foursquare_client_secret, lat, lng, mealType))
+        foursquare_client_id, foursquare_client_secret, lat, lng, meal_type))
 
     h = httplib2.Http()
     result = json.loads(h.request(url, 'GET')[1])
@@ -43,20 +43,20 @@ def findRestaurant(mealType, location):
         else:
             image_url = 'https://resizer.otstatic.com/v2/photos/medium/23668132.jpg'
 
-        restaurantInfo = {'name': restaurant_name, 'address': restaurant_address, 'image': image_url}
-        print "Restaurant: %s" % restaurantInfo['name']
-        print "Address: %s" % restaurantInfo['address']
-        print "Image: %s \n" % restaurantInfo['image']
+        restaurant_info = {'name': restaurant_name, 'address': restaurant_address, 'image': image_url}
+        print "Restaurant: %s" % restaurant_info['name']
+        print "Address: %s" % restaurant_info['address']
+        print "Image: %s \n" % restaurant_info['image']
 
-        return restaurantInfo
+        return restaurant_info
     else:
         print "No venues founded in %s" % location
-        return "No venues founded in %s" % location
+        return "No restaurants founded"
 
 if __name__ == '__main__':
-    findRestaurant("Pizza", "Tokyo, Japan")
-    findRestaurant("Sushi", "Omsk, Russia")
-    findRestaurant("Tacos", "Jakarta, Indonesia")
-    findRestaurant("Spaghetti", "New Delhi, India")
-    findRestaurant("Sushi", "Los Angeles, California")
-    findRestaurant("Gyros", "Sydney Australia")
+    find_restaurant("Pizza", "Tokyo, Japan")
+    find_restaurant("Sushi", "Omsk, Russia")
+    find_restaurant("Tacos", "Jakarta, Indonesia")
+    find_restaurant("Spaghetti", "New Delhi, India")
+    find_restaurant("Sushi", "Los Angeles, California")
+    find_restaurant("Gyros", "Sydney Australia")
