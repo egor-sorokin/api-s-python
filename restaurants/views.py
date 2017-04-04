@@ -1,10 +1,16 @@
-import sys
+import os, sys
 import codecs
 from models import Base, Restaurant
 from flask import Flask, request, jsonify
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+
+
+CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(os.path.dirname(CURRENT_DIR))
+
 from findRestaurant import find_restaurant
+
 
 sys.stdout = codecs.getwriter('utf8')(sys.stdout)
 sys.stderr = codecs.getwriter('utf8')(sys.stderr)
@@ -27,12 +33,11 @@ def all_restaurants_handler():
     elif request.method == 'POST':
         location = request.args.get('location', '')
         meal_type = request.args.get('mealType', '')
-
         restaurant_info = find_restaurant(meal_type, location)
         if restaurant_info != 'No restaurants founded':
             restaurant = Restaurant(restaurant_name=unicode(restaurant_info['name']),
                                     restaurant_address=unicode(restaurant_info['address']),
-                                    restaurant_image=unicode(restaurant_info['image']))
+                                    restaurant_image=restaurant_info['image'])
             session.add(restaurant)
             session.commit()
             return jsonify(restaurant=restaurant.serialize)
@@ -43,12 +48,32 @@ def all_restaurants_handler():
 
 @app.route('/restaurants/<int:id>', methods=['GET', 'PUT', 'DELETE'], strict_slashes=False)
 def restaurant_handler(id):
+    restaurant = session.query(Restaurant).filter_by(id=id).one()
     if request.method == 'GET':
-        pass
+        return jsonify(restaurant=restaurant.serialize)
+
     elif request.method == 'PUT':
-        pass
+        address = request.args.get('address', '')
+        name = request.args.get('name', '')
+        image = request.args.get('image', '')
+
+        if address:
+            restaurant.restaurant_address = address
+        if name:
+            restaurant.restaurant_name = name
+        if image:
+            restaurant.restaurant_image = image
+
+        session.add(restaurant)
+        session.commit()
+
+        return jsonify(restaurant=restaurant.serialize)
+
     elif request.method == 'DELETE':
-        pass
+        session.delete(restaurant)
+        session.commit()
+
+        return 'Successfully deleted'
 
 
 if __name__ == '__main__':
