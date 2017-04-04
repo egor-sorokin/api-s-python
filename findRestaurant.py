@@ -44,9 +44,9 @@ def find_restaurant(meal_type, location):
             image_url = 'https://resizer.otstatic.com/v2/photos/medium/23668132.jpg'
 
         restaurant_info = {'name': restaurant_name, 'address': restaurant_address, 'image': image_url}
-        print "Restaurant: %s" % restaurant_info['name']
-        print "Address: %s" % restaurant_info['address']
-        print "Image: %s \n" % restaurant_info['image']
+        # print "Restaurant: %s" % restaurant_info['name']
+        # print "Address: %s" % restaurant_info['address']
+        # print "Image: %s \n" % restaurant_info['image']
 
         return restaurant_info
     else:
