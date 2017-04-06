@@ -22,4 +22,4 @@ class User(Base):
 
 
 engine = create_engine('sqlite:///users.db')
-Base.metadate.create_all(engine)
+Base.metadata.create_all(engine)
