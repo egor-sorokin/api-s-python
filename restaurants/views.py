@@ -1,14 +1,11 @@
-import os, sys
 import codecs
-from models import Base, Restaurant
+import os
+import sys
+
 from flask import Flask, request, jsonify
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-
-
-CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
-sys.path.append(os.path.dirname(CURRENT_DIR))
-
+from models import Base, Restaurant
 from findRestaurant import find_restaurant
 
 
