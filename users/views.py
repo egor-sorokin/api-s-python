@@ -47,6 +47,14 @@ def new_user():
     return jsonify({'username': user.username}), 201
 
 
+@app.route('/users/<int:id>/', strict_slashes=False)
+def get_user(id):
+    user = session.query(User).filter_by(id=id).one()
+    if not user:
+        abort(400)
+    return jsonify({'username': user.username})
+
+
 @app.route('/protected_resource', methods=['GET'])
 @auth.login_required
 def get_resource():
