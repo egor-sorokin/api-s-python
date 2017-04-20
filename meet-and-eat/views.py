@@ -38,7 +38,7 @@ def user(id):
 def meet_requests_handler(user_id):
     if request.method == 'GET':
         meet_requests = session.query(Request).all()
-        return jsonify(bagels=[i.serialize for i in meet_requests])
+        return jsonify(meet_requests=[i.serialize for i in meet_requests])
     elif request.method == 'POST':
         meal_type = request.json.get('meal_type')
         location_string = request.json.get('location_string')
