@@ -4,7 +4,7 @@ import random
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from flask import Flask, g, request, jsonify, abort
-from models import Base, User, Request, Proposal, MealDate
+from models import Base, User, MeetRequest, Proposal, MealDate
 from flask.ext.httpauth import HTTPBasicAuth
 
 
@@ -46,23 +46,70 @@ def logout(provider):
     pass
 
 
-@app.route('/api/v1/users/', methods=['POST', 'GET', 'PUT', 'DELETE'], strict_slashes=False)
+@app.route('/api/v1/users/', methods=['GET', 'POST'], strict_slashes=False)
 def users_handler():
-    pass
+    if request.method == 'GET':
+        try:
+            users = session.query(User).all()
+            return jsonify(users=[i.serialize for i in users]), 200
+        except ValueError:
+            print "Users are not found, database is empty"
+            abort(400)
+
+    if request.method == 'POST':
+        username = request.json.get('username')
+        password = request.json.get('password')
+
+        if username is None or password is None:
+            print "Arguments are missed"
+            abort(400)
+
+        if session.query(User).filter_by(username=username).first() is not None:
+            print "User already exists"
+            return jsonify({'message': 'user already exists'}), 200
+
+        user = User(username=username)
+        user.hash_password(password)
+        session.add(user)
+        session.commit()
+
+        return jsonify(user=user.serialize), 201
 
 
-@app.route('/api/v1/users/<int:id>', methods=['GET'], strict_slashes=False)
-def user_handler(id):
-    pass
+@app.route('/api/v1/users/<int:user_id>', methods=['GET', 'PUT', 'DELETE'], strict_slashes=False)
+def user_handler(user_id):
+    try:
+        user = session.query(User).filter_by(id=user_id).one()
+        if request.method == 'GET':
+            return jsonify(user.serialize), 200
+        elif request.method == 'PUT':
+            username = request.json.get('username')
+
+            if username is not None:
+                user.username = username
+                session.add(user)
+                session.commit()
+                return jsonify(user=user.serialize)
+            else:
+                print "Arguments are missed"
+                abort(400)
+
+        elif request.method == 'DELETE':
+            session.delete(user)
+            session.commit()
+            return jsonify({'message': 'user was successfully deleted'}), 200
+    except ValueError:
+        print "User is not found, incorrect user_id"
+        abort(400)
 
 
 @app.route('/api/v1/requests/', methods=['POST', 'GET'], strict_slashes=False)
-def requests():
+def meet_requests_handler():
     pass
 
 
 @app.route('/api/v1/requests/<int:id>', methods=['GET', 'PUT', 'DELETE'], strict_slashes=False)
-def request(id):
+def meet_request_handler(id):
     pass
 
 

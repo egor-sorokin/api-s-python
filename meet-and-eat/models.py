@@ -49,8 +49,8 @@ class User(Base):
         }
 
 
-class Request(Base):
-    __tablename__ = 'request'
+class MeetRequest(Base):
+    __tablename__ = 'meet_request'
 
     id = Column(Integer, primary_key=True)
     meal_type = Column(String, nullable=False, index=True)
@@ -84,7 +84,7 @@ class Proposal(Base):
     user_proposed_from = Column(String)
     filled = Column(String)
     request_id = Column(String, ForeignKey('request.id'))
-    relationship(Request)
+    relationship(MeetRequest)
 
     @property
     def serialize(self):
