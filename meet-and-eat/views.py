@@ -109,7 +109,7 @@ def meet_requests_handler():
             meet_requests = session.query(MeetRequest).all()
             return jsonify(meet_requests=[i.serialize for i in meet_requests])
         except ValueError:
-            print "Requests not found, perhaps table is empty"
+            print "Something went wrong"
             abort(400)
 
     elif request.method == 'POST':
@@ -135,7 +135,7 @@ def meet_requests_handler():
 @app.route('/api/v1/requests/<int:request_id>', methods=['GET', 'PUT', 'DELETE'], strict_slashes=False)
 def meet_request_handler(request_id):
     try:
-        meet_request = session.query(MeetRequest).filter_by(request_id=request_id).one()
+        meet_request = session.query(MeetRequest).filter_by(id=request_id).one()
         if request.method == 'GET':
             return jsonify(meet_request=meet_request.serialize)
         elif request.method == 'PUT':
