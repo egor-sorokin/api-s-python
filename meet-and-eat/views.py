@@ -35,11 +35,12 @@ def user(id):
 
 
 @app.route('/api/v1/requests/', methods=['POST', 'GET'], strict_slashes=False)
-def meet_requests_handler(user_id):
+def meet_requests_handler():
     if request.method == 'GET':
         meet_requests = session.query(Request).all()
         return jsonify(meet_requests=[i.serialize for i in meet_requests])
     elif request.method == 'POST':
+        user_id = request.json.get('user_id')
         meal_type = request.json.get('meal_type')
         location_string = request.json.get('location_string')
         latitude = request.json.get('latitude')
@@ -59,7 +60,7 @@ def meet_requests_handler(user_id):
 
 
 @app.route('/api/v1/requests/<int:request_id>', methods=['GET', 'PUT', 'DELETE'], strict_slashes=False)
-def meet_request_handler(user_id, request_id):
+def meet_request_handler(request_id):
     meet_request = session.query(Request).filter_by(request_id=request_id).one()
     if request.method == 'GET':
         return jsonify(meet_request=meet_request.serialize)
