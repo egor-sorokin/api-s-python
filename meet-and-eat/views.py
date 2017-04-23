@@ -172,13 +172,56 @@ def meet_request_handler(request_id):
 
 
 @app.route('/api/v1/proposals/', methods=['POST', 'GET'], strict_slashes=False)
-def proposals():
-    pass
+def proposals_handler():
+    if request.method == 'GET':
+        try:
+            proposals = session.query(Proposal).all()
+            return jsonify(proposals=[i.serialize for i in proposals])
+        except ValueError:
+            print "Something went wrong"
+            abort(400)
+
+    elif request.method == 'POST':
+        user_id = request.json.get('user_id')
+        user_proposed_to = request.json.get('user_proposed_to')
+        user_proposed_from = request.json.get('user_proposed_from')
+        filled = request.json.get('filled')
+
+        new_proposal = Proposal(user_proposed_to=user_proposed_to, user_proposed_from=user_proposed_from, filled=filled,
+                                user_id=user_id)
+        session.add(new_proposal)
+        session.commit()
+        return jsonify(proposal=new_proposal.serialize)
 
 
-@app.route('/api/v1/proposals/<int:id>', methods=['GET', 'PUT', 'DELETE'], strict_slashes=False)
-def proposal(id):
-    pass
+@app.route('/api/v1/proposals/<int:proposal_id>/', methods=['GET', 'PUT', 'DELETE'], strict_slashes=False)
+def proposal_handler(proposal_id):
+    try:
+        proposal = session.query(Request).filter_by(id=proposal_id).one()
+        if request.method == 'GET':
+            return jsonify(proposal=proposal.serialize)
+        elif request.method == 'PUT':
+            user_proposed_to = request.json.get('user_proposed_to')
+            user_proposed_from = request.json.get('user_proposed_from')
+
+            if user_proposed_to:
+                proposal.user_proposed_to = user_proposed_to
+            if user_proposed_from:
+                proposal.user_proposed_from = user_proposed_from
+
+            session.add(proposal)
+            session.commit()
+
+            return jsonify(proposal=proposal.serialize)
+        elif request.method == 'DELETE':
+            session.delete(proposal)
+            session.commit()
+            print "Removed the proposal with id %s" % proposal_id
+            return jsonify({'message': 'The proposal has been successfully removed'}), 200
+
+    except ValueError:
+        print "Proposal not found, incorrect proposal_id"
+        abort(400)
 
 
 @app.route('/api/v1/dates/', methods=['POST', 'GET'], strict_slashes=False)
