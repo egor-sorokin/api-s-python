@@ -52,7 +52,7 @@ def users_handler():
             users = session.query(User).all()
             return jsonify(users=[i.serialize for i in users]), 200
         except ValueError:
-            print "Users are not found, database is empty"
+            print "Users not found, database is empty"
             abort(400)
 
     if request.method == 'POST':
@@ -98,15 +98,20 @@ def user_handler(user_id):
             session.commit()
             return jsonify({'message': 'user was successfully deleted'}), 200
     except ValueError:
-        print "User is not found, incorrect user_id"
+        print "User not found, incorrect user_id"
         abort(400)
 
 
 @app.route('/api/v1/requests/', methods=['POST', 'GET'], strict_slashes=False)
 def meet_requests_handler():
     if request.method == 'GET':
-        meet_requests = session.query(MeetRequest).all()
-        return jsonify(meet_requests=[i.serialize for i in meet_requests])
+        try:
+            meet_requests = session.query(MeetRequest).all()
+            return jsonify(meet_requests=[i.serialize for i in meet_requests])
+        except ValueError:
+            print "Requests not found, perhaps table is empty"
+            abort(400)
+
     elif request.method == 'POST':
         user_id = request.json.get('user_id')
         meal_type = request.json.get('meal_type')
@@ -129,36 +134,41 @@ def meet_requests_handler():
 
 @app.route('/api/v1/requests/<int:request_id>', methods=['GET', 'PUT', 'DELETE'], strict_slashes=False)
 def meet_request_handler(request_id):
-    meet_request = session.query(MeetRequest).filter_by(request_id=request_id).one()
-    if request.method == 'GET':
-        return jsonify(meet_request=meet_request.serialize)
-    elif request.method == 'PUT':
-        meal_type = request.json.get('meal_type')
-        location_string = request.json.get('location_string')
-        latitude = request.json.get('latitude')
-        longitude = request.json.get('longitude')
-        meal_time = request.json.get('meal_time')
+    try:
+        meet_request = session.query(MeetRequest).filter_by(request_id=request_id).one()
+        if request.method == 'GET':
+            return jsonify(meet_request=meet_request.serialize)
+        elif request.method == 'PUT':
+            meal_type = request.json.get('meal_type')
+            location_string = request.json.get('location_string')
+            latitude = request.json.get('latitude')
+            longitude = request.json.get('longitude')
+            meal_time = request.json.get('meal_time')
 
-        if meal_type:
-            meet_request.meal_type = meal_type
-        if location_string:
-            meet_request.location_string = location_string
-        if latitude:
-            meet_request.latitude = latitude
-        if longitude:
-            meet_request.longitude = longitude
-        if meal_time:
-            meet_request.meal_time = meal_time
+            if meal_type:
+                meet_request.meal_type = meal_type
+            if location_string:
+                meet_request.location_string = location_string
+            if latitude:
+                meet_request.latitude = latitude
+            if longitude:
+                meet_request.longitude = longitude
+            if meal_time:
+                meet_request.meal_time = meal_time
 
-        session.add(meet_request)
-        session.commit()
+            session.add(meet_request)
+            session.commit()
 
-        return jsonify(meet_request=meet_request.serialize)
-    elif request.method == 'DELETE':
-        session.delete(meet_request)
-        session.commit()
-        print "Removed the meet request with id %s" % request_id
-        return jsonify({'message': 'The meet request has been successfully removed'}), 200
+            return jsonify(meet_request=meet_request.serialize)
+        elif request.method == 'DELETE':
+            session.delete(meet_request)
+            session.commit()
+            print "Removed the meet request with id %s" % request_id
+            return jsonify({'message': 'The meet request has been successfully removed'}), 200
+
+    except ValueError:
+        print "Request not found, incorrect request_id"
+        abort(400)
 
 
 @app.route('/api/v1/proposals/', methods=['POST', 'GET'], strict_slashes=False)
