@@ -7,7 +7,6 @@ from flask import Flask, g, request, jsonify, abort
 from models import Base, User, MeetRequest, Proposal, MealDate
 from flask.ext.httpauth import HTTPBasicAuth
 
-
 auth = HTTPBasicAuth()
 engine = create_engine('sqlite:///meetandeat.db')
 Base.metadata.bind = engine
@@ -53,7 +52,7 @@ def users_handler():
             users = session.query(User).all()
             return jsonify(users=[i.serialize for i in users]), 200
         except ValueError:
-            print "Users are not found, database is empty"
+            print "Users not found, database is empty"
             abort(400)
 
     if request.method == 'POST':
@@ -99,18 +98,77 @@ def user_handler(user_id):
             session.commit()
             return jsonify({'message': 'user was successfully deleted'}), 200
     except ValueError:
-        print "User is not found, incorrect user_id"
+        print "User not found, incorrect user_id"
         abort(400)
 
 
 @app.route('/api/v1/requests/', methods=['POST', 'GET'], strict_slashes=False)
 def meet_requests_handler():
-    pass
+    if request.method == 'GET':
+        try:
+            meet_requests = session.query(MeetRequest).all()
+            return jsonify(meet_requests=[i.serialize for i in meet_requests])
+        except ValueError:
+            print "Something went wrong"
+            abort(400)
+
+    elif request.method == 'POST':
+        user_id = request.json.get('user_id')
+        meal_type = request.json.get('meal_type')
+        location_string = request.json.get('location_string')
+        latitude = request.json.get('latitude')
+        longitude = request.json.get('longitude')
+        meal_time = request.json.get('meal_time')
+        filled = request.json.get('filled')
+
+        if session.query(MeetRequest).filter_by(user_id=user_id, meal_time=meal_time).first() is not None:
+            print "You already have a meet request in that time, please choose another one"
+            return jsonify({'message': 'You already have a meet request in that time, please choose another time'}), 200
+
+        new_meet_request = MeetRequest(meal_type=meal_type, location_string=location_string, latitude=latitude,
+                                       longitude=longitude, meal_time=meal_time, filled=filled, user_id=user_id)
+        session.add(new_meet_request)
+        session.commit()
+        return jsonify(meet_request=new_meet_request.serialize)
 
 
-@app.route('/api/v1/requests/<int:id>', methods=['GET', 'PUT', 'DELETE'], strict_slashes=False)
-def meet_request_handler(id):
-    pass
+@app.route('/api/v1/requests/<int:request_id>', methods=['GET', 'PUT', 'DELETE'], strict_slashes=False)
+def meet_request_handler(request_id):
+    try:
+        meet_request = session.query(MeetRequest).filter_by(id=request_id).one()
+        if request.method == 'GET':
+            return jsonify(meet_request=meet_request.serialize)
+        elif request.method == 'PUT':
+            meal_type = request.json.get('meal_type')
+            location_string = request.json.get('location_string')
+            latitude = request.json.get('latitude')
+            longitude = request.json.get('longitude')
+            meal_time = request.json.get('meal_time')
+
+            if meal_type:
+                meet_request.meal_type = meal_type
+            if location_string:
+                meet_request.location_string = location_string
+            if latitude:
+                meet_request.latitude = latitude
+            if longitude:
+                meet_request.longitude = longitude
+            if meal_time:
+                meet_request.meal_time = meal_time
+
+            session.add(meet_request)
+            session.commit()
+
+            return jsonify(meet_request=meet_request.serialize)
+        elif request.method == 'DELETE':
+            session.delete(meet_request)
+            session.commit()
+            print "Removed the meet request with id %s" % request_id
+            return jsonify({'message': 'The meet request has been successfully removed'}), 200
+
+    except ValueError:
+        print "Request not found, incorrect request_id"
+        abort(400)
 
 
 @app.route('/api/v1/proposals/', methods=['POST', 'GET'], strict_slashes=False)
