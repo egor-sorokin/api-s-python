@@ -1,5 +1,6 @@
 import string
 import random
+
 from sqlalchemy import exc
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -197,7 +198,7 @@ def proposals_handler():
 @app.route('/api/v1/proposals/<int:proposal_id>/', methods=['GET', 'PUT', 'DELETE'], strict_slashes=False)
 def proposal_handler(proposal_id):
     try:
-        proposal = session.query(Request).filter_by(id=proposal_id).one()
+        proposal = session.query(Proposal).filter_by(id=proposal_id).one()
         if request.method == 'GET':
             return jsonify(proposal=proposal.serialize)
         elif request.method == 'PUT':
@@ -225,13 +226,86 @@ def proposal_handler(proposal_id):
 
 
 @app.route('/api/v1/dates/', methods=['POST', 'GET'], strict_slashes=False)
-def dates():
-    pass
+def meal_dates_handler():
+    if request.method == 'GET':
+        try:
+            dates = session.query(MealDate).all()
+            return jsonify(dates=[i.serialize for i in dates])
+        except ValueError:
+            print "Something went wrong"
+            abort(400)
+    elif request.method == 'POST':
+        user_first = request.json.get('user_first')
+        user_second = request.json.get('user_second')
+        restaurant_name = request.json.get('restaurant_name')
+        restaurant_address = request.json.get('restaurant_address')
+        restaurant_picture = request.json.get('restaurant_picture')
+        meal_time = request.json.get('meal_time')
+
+        new_meal_date = MealDate(user_first=user_first, user_second=user_second, restaurant_name=restaurant_name,
+                                 restaurant_address=restaurant_address, restaurant_picture=restaurant_picture,
+                                 meal_time=meal_time)
+
+        session.add(new_meal_date)
+        session.commit()
+        print "Date has been successfully created"
+        return jsonify(date=new_meal_date.serialize)
 
 
-@app.route('/api/v1/dates/<int:id>', methods=['GET', 'PUT', 'DELETE'], strict_slashes=False)
-def date(id):
-    pass
+@app.route('/api/v1/dates/<int:date_id>', methods=['GET', 'PUT', 'DELETE'], strict_slashes=False)
+def meal_date_handler(date_id):
+    try:
+        meal_date = session.query(MealDate).filter_by(id=date_id).one()
+
+        if request.method == 'GET':
+            return jsonify(date=meal_date.serialize)
+
+        elif request.method == 'PUT':
+            current_user_id = request.json.get('user_id')
+            current_user = session.query(User).filter_by(id=current_user_id).one()
+
+            if meal_date.user_first == current_user.username or meal_date.user_second == current_user.username:
+                user_first = request.json.get('user_first')
+                user_second = request.json.get('user_second')
+                restaurant_name = request.json.get('restaurant_name')
+                restaurant_address = request.json.get('restaurant_address')
+                restaurant_picture = request.json.get('restaurant_picture')
+                meal_time = request.json.get('meal_time')
+
+                if user_first:
+                    meal_date.user_first = user_first
+                if user_second:
+                    meal_date.user_second = user_second
+                if restaurant_name:
+                    meal_date.restaurant_name = restaurant_name
+                if restaurant_address:
+                    meal_date.restaurant_address = restaurant_address
+                if restaurant_picture:
+                    meal_date.restaurant_picture = restaurant_picture
+                if meal_time:
+                    meal_date.meal_time = meal_time
+
+                session.add(meal_date)
+                session.commit()
+
+                print "Date has been successfully updated"
+                return jsonify(meal_date=meal_date.serialize)
+
+            else:
+                print "You don't have permission"
+                abort(400)
+
+        elif request.method == 'DELETE':
+            if meal_date is not None:
+                session.delete(meal_date)
+                session.commit()
+
+                print "Remover the date with id %s" % date_id
+                return jsonify({'message': 'The date has been successfully deleted'}), 200
+
+    except exc.SQLAlchemyError:
+        print "Date not found, incorrect date_id"
+        abort(400)
 
 
 if __name__ == '__main__':
