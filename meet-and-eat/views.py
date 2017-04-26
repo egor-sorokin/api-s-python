@@ -1,6 +1,6 @@
 import string
 import random
-
+from sqlalchemy import exc
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from flask import Flask, g, request, jsonify, abort
@@ -51,8 +51,8 @@ def users_handler():
         try:
             users = session.query(User).all()
             return jsonify(users=[i.serialize for i in users]), 200
-        except ValueError:
-            print "Users not found, database is empty"
+        except exc.SQLAlchemyError:
+            print "Users not found, table is empty"
             abort(400)
 
     if request.method == 'POST':
@@ -97,7 +97,7 @@ def user_handler(user_id):
             session.delete(user)
             session.commit()
             return jsonify({'message': 'user was successfully deleted'}), 200
-    except ValueError:
+    except exc.SQLAlchemyError:
         print "User not found, incorrect user_id"
         abort(400)
 
@@ -108,8 +108,8 @@ def meet_requests_handler():
         try:
             meet_requests = session.query(MeetRequest).all()
             return jsonify(meet_requests=[i.serialize for i in meet_requests])
-        except ValueError:
-            print "Something went wrong"
+        except exc.SQLAlchemyError:
+            print "Requests not found, table is empty"
             abort(400)
 
     elif request.method == 'POST':
@@ -166,7 +166,7 @@ def meet_request_handler(request_id):
             print "Removed the meet request with id %s" % request_id
             return jsonify({'message': 'The meet request has been successfully removed'}), 200
 
-    except ValueError:
+    except exc.SQLAlchemyError:
         print "Request not found, incorrect request_id"
         abort(400)
 
@@ -177,8 +177,8 @@ def proposals_handler():
         try:
             proposals = session.query(Proposal).all()
             return jsonify(proposals=[i.serialize for i in proposals])
-        except ValueError:
-            print "Something went wrong"
+        except exc.SQLAlchemyError:
+            print "Proposals not found, table is empty"
             abort(400)
 
     elif request.method == 'POST':
@@ -219,7 +219,7 @@ def proposal_handler(proposal_id):
             print "Removed the proposal with id %s" % proposal_id
             return jsonify({'message': 'The proposal has been successfully removed'}), 200
 
-    except ValueError:
+    except exc.SQLAlchemyError:
         print "Proposal not found, incorrect proposal_id"
         abort(400)
 
