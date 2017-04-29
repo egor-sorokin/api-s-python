@@ -131,7 +131,7 @@ def get_user(id):
     return jsonify({'username': user.username})
 
 
-@app.route('/api/resource/')
+@app.route('/api/resource/', methods=['GET'], strict_slashes=False)
 @auth.login_required
 def get_resource():
     return jsonify({'data': 'Hello, %s!' % g.user.username})
