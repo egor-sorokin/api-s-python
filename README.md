@@ -5,7 +5,7 @@ This repo presents results of online course ["Design RESTful APIs"] on Udacity
 author: https://github.com/lobrown
 
 
-Starter code also has been taken from Udacity course, except the final project, because there was no a starter code. The final project is called "Meet and Eat" (curently in progress). Requirements for that project you can find here https://github.com/udacity/APIs/blob/master/Final%20Project/FinalProject.pdf
+Starter code also has been taken from Udacity course, except the final project, because there was no a starter code. The final project is called "Meet and Eat" (curently in progress). Requirements for that project you can find here
 
 ## Projects and types of api implementations
 ### 1) Puppies
@@ -96,7 +96,7 @@ Starter code also has been taken from Udacity course, except the final project, 
                         
   `/oauth/<provider>/`: 
            
-       - POST (create instance) 
+       - POST (exchange a one time auth code and a token) 
                 Params: 
                     - auth_code (string) // here should be one time auth code 
                     
@@ -129,4 +129,5 @@ Starter code also has been taken from Udacity course, except the final project, 
 
 
 ["Design RESTful APIs"]: https://www.udacity.com/course/designing-restful-apis--ud388
+[here]: https://github.com/udacity/APIs/blob/master/Final%20Project/FinalProject.pdf
 [redis server]: https://redis.io/topics/quickstart
