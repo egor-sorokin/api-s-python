@@ -5,7 +5,7 @@ This repo presents results of online course ["Design RESTful APIs"] on Udacity.
 Author of the course: https://github.com/lobrown
 
 
-Starter code also has been taken from Udacity course, except the final project, because there was no a starter code. The final project is called "Meet and Eat" (curently in progress). Its requirements can be find [here].
+Starter code also has been taken from Udacity course, except the final project, because there was no a starter code. The final project is called "Meet and Eat" (currently in progress). Its requirements can be found [here].
 
 ## Projects and types of api implementations
 **Note:** All projects can be run simple by command `python views.py`, except projects with numbers 5 and 6. For them you can find details in a specific project.
@@ -151,6 +151,9 @@ Starter code also has been taken from Udacity course, except the final project, 
         
       - GET (return catalog of items)
             Limit of requests: 30 requests per 60 seconds
+
+### 7) Meet and Eat
+*in progress*
 
 [Google Maps Geocoding API]: https://developers.google.com/maps/documentation/geocoding/intro
 [Google Maps API]: https://developers.google.com/maps/?hl=en
