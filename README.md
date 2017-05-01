@@ -150,7 +150,7 @@ Starter code also has been taken from Udacity course, except the final project, 
   `/catalog/`:
         
       - GET (return catalog of items)
-            Requests limiting: 30 requests per 60 seconds
+            Limit of requests: 30 requests per 60 seconds
 
 [Google Maps Geocoding API]: https://developers.google.com/maps/documentation/geocoding/intro
 [Google Maps API]: https://developers.google.com/maps/?hl=en
