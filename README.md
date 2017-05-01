@@ -1,13 +1,15 @@
 # api-s-python
 ## General description
-This repo presents results of online course ["Design RESTful APIs"] on Udacity
+This repo presents results of online course ["Design RESTful APIs"] on Udacity.
 
-author: https://github.com/lobrown
+Author of the course: https://github.com/lobrown
 
 
-Starter code also has been taken from Udacity course, except the final project, because there was no a starter code. The final project is called "Meet and Eat" (curently in progress). Requirements for that project you can find [here]
+Starter code also has been taken from Udacity course, except the final project, because there was no a starter code. The final project is called "Meet and Eat" (curently in progress). Its requirements can be find [here].
 
 ## Projects and types of api implementations
+**Note:** All projects can be run simple by command `python views.py`, except projects with numbers 5 and 6. For them you can find details in a specific project.
+
 ### 1) Puppies
 **Description:** Simple rest api without any authentification
 
@@ -90,6 +92,8 @@ Starter code also has been taken from Udacity course, except the final project, 
 ### 4) Pale kale
 **Description:** Google Oauth2 
 
+**Methods:** 
+
   `/clientOAuth/`: 
         
        Output: view with google oauth button, which return one time auth code 
@@ -112,22 +116,45 @@ Starter code also has been taken from Udacity course, except the final project, 
         - GET (return "hello, <username>")   
 
 ### 5) Restaurants
-**Description:** Searching restaurants based on a meal type and a location data through interactions with google maps and foursquare apis
+**Description:** Searching restaurants based on a meal type and a location data through interactions with google maps and foursquare apis.
 
-*in progress...*
+**Note:** Please check out [Foursquare API] and [Google Maps API] and [Google Maps Geocoding API] for details.
+
+**Methods:**
+
+  `/restaurants/`: 
+
+      - GET (return list of restaurants)
+      - POST (add a restaurant to db) 
+            Params: 
+                - location (string)
+                - mealType (string)
+                        
+  `/restaurants/<id>/`:
+  
+      - GET (return restaurant by id)
+      - PUT (modify restaurant)
+            Params: 
+                - address (string)
+                - name (string)
+                - image (string)
+      - DELETE (remove restaurant)
 
 ### 6) Bargain mart
 **Description:** Limiting of requests to the rest api
 
-**Note:** how to run [redis server] 
+**Note:** Instruction for the running [redis server]. Also to test the project you need to run first of all *views.py* then *hungyclient.py*.
+
+**Methods:** 
 
   `/catalog/`:
         
-        - GET (return catalog of items)
-        Requests limiting: 30 requests per 60 seconds
+      - GET (return catalog of items)
+            Requests limiting: 30 requests per 60 seconds
 
-
-
+[Google Maps Geocoding API]: https://developers.google.com/maps/documentation/geocoding/intro
+[Google Maps API]: https://developers.google.com/maps/?hl=en
+[Foursquare API]: https://developer.foursquare.com/docs/venues/venues
 ["Design RESTful APIs"]: https://www.udacity.com/course/designing-restful-apis--ud388
 [here]: https://github.com/udacity/APIs/blob/master/Final%20Project/FinalProject.pdf
 [redis server]: https://redis.io/topics/quickstart
