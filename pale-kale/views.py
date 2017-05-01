@@ -123,14 +123,6 @@ def new_user():
     session.commit()
 
 
-@app.route('/api/users/<int:id>/')
-def get_user(id):
-    user = session.query(User).filter_by(id=id).one()
-    if not user:
-        abort(400)
-    return jsonify({'username': user.username})
-
-
 @app.route('/api/resource/', methods=['GET'], strict_slashes=False)
 @auth.login_required
 def get_resource():
