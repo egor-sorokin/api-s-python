@@ -1,15 +1,13 @@
 # api-s-python
 ## General description
-This repo presents results of online course "Design RESTful APIs" on Udacity
-
-link: https://www.udacity.com/course/designing-restful-apis--ud388
+This repo presents results of online course ["Design RESTful APIs"] on Udacity
 
 author: https://github.com/lobrown
 
 
 Starter code also has been taken from Udacity course, except the final project, because there was no a starter code. The final project is called "Meet and Eat" (curently in progress). Requirements for that project you can find here https://github.com/udacity/APIs/blob/master/Final%20Project/FinalProject.pdf
 
-## Types of rest api implementations
+## Projects and types of api implementations
 ### 1) Puppies
 **Description:** Simple rest api without any authentification
 
@@ -121,4 +119,14 @@ Starter code also has been taken from Udacity course, except the final project, 
 ### 6) Bargain mart
 **Description:** Limiting of requests to the rest api
 
-*in progress...*
+**Note:** how to run [redis server] 
+
+  `/catalog/`:
+        
+        - GET (return catalog of items)
+        Requests limiting: 30 requests per 60 seconds
+
+
+
+["Design RESTful APIs"]: https://www.udacity.com/course/designing-restful-apis--ud388
+[redis server]: https://redis.io/topics/quickstart
