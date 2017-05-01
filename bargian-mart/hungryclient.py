@@ -8,7 +8,7 @@ h = httplib2.Http()
 url = raw_input(
     "Please enter the uri you want to access, \n If left blank the connection will be set to 'http://localhost:5000/catalog':   ")
 if url == '':
-    url = 'http://localhost:5000/catalog'
+    url = 'http://localhost:5000/catalog/'
 
 req_per_minute = float(raw_input("Please specify the number of requests per minute:  "))
 
