@@ -5,7 +5,7 @@ This repo presents results of online course ["Design RESTful APIs"] on Udacity
 author: https://github.com/lobrown
 
 
-Starter code also has been taken from Udacity course, except the final project, because there was no a starter code. The final project is called "Meet and Eat" (curently in progress). Requirements for that project you can find here
+Starter code also has been taken from Udacity course, except the final project, because there was no a starter code. The final project is called "Meet and Eat" (curently in progress). Requirements for that project you can find [here]
 
 ## Projects and types of api implementations
 ### 1) Puppies
